@@ -23,8 +23,12 @@ namespace JapaneseCrossword
 
         public Cell[] GetAnswer()
         {
-            for (var i = 0; i < line.Length - lineInfo[0]; i++)
-                SomethingRecursion(i, 0);
+            for (var i = 0; i <= line.Length - lineInfo[0]; i++)
+                if (SomethingRecursion(i, 0))
+                {
+                    for (var j = 0; j < i; j++)
+                        possibleWhite[j] = true;
+                }
             var ans = new Cell[line.Length];
             for (var i = 0; i < line.Length; i++)
             {

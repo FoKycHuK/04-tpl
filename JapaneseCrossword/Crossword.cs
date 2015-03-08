@@ -10,7 +10,7 @@ namespace JapaneseCrossword
     {
         Unknown,
         Black,
-        Whilte
+        White
     }
 
     public class Crossword

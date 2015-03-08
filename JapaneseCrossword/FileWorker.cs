@@ -13,7 +13,7 @@ namespace JapaneseCrossword
         {
             {Cell.Unknown, '?'},
             {Cell.Black, '*'},
-            {Cell.Whilte, '.'}
+            {Cell.White, '.'}
         };
 
         public static Crossword ReadFromFile(string fileName)

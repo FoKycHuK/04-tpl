@@ -29,5 +29,27 @@ namespace JapaneseCrossword
             columnCount = columns.Length;
             field = new Cell[rowCount, columnCount];
         }
+
+        public Cell[] GetLine(bool isColumn, int index)
+        {
+            var ans = new Cell[isColumn ? rowCount : columnCount];
+            for (var i = 0; i < ans.Length; i++)
+            {
+                var x = isColumn ? i : index;
+                var y = isColumn ? index : i;
+                ans[i] = field[x, y];
+            }
+            return ans;
+        }
+
+        public void SetLine(bool isColumn, int index, Cell[] line)
+        {
+            for (var i = 0; i < line.Length; i++)
+            {
+                var x = isColumn ? i : index;
+                var y = isColumn ? index : i;
+                field[x, y] = line[i];
+            }
+        }
     }
 }

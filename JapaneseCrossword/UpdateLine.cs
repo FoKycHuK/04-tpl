@@ -21,9 +21,19 @@ namespace JapaneseCrossword
             this.lineInfo = lineInfo;
         }
 
-        public Cell[] GetAnswer(int startIndex, int blockIndex)
+        public Cell[] GetAnswer()
         {
-            return null;
+            for (var i = 0; i < line.Length - lineInfo[0]; i++)
+                SomethingRecursion(i, 0);
+            var ans = new Cell[line.Length];
+            for (var i = 0; i < line.Length; i++)
+            {
+                if (line[i] != Cell.Unknown)
+                    continue;
+                if (possibleBlack[i] != possibleWhite[i])
+                    ans[i] = possibleWhite[i] ? Cell.White : Cell.Black;
+            }
+            return ans;
         }
 
         bool SomethingRecursion(int startIndex, int blockIndex) // осторожно, опасно

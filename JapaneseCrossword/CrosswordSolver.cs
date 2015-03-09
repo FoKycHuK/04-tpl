@@ -32,9 +32,9 @@ namespace JapaneseCrossword
                 }
             }
             catch (ArgumentException) { return SolutionStatus.IncorrectCrossword; }
-
+            //MakeOneLine(cs, false, 1);
             try { FileWorker.WriteToFile(outputFilePath, cs.field); }
-            catch { return SolutionStatus.BadOutputFilePath; }
+            catch (ArgumentException) { return SolutionStatus.BadOutputFilePath; }
 
             foreach (var value in cs.field)
                 if (value == Cell.Unknown)

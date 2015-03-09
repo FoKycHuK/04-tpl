@@ -56,7 +56,7 @@ namespace JapaneseCrossword
             {
                 var res = false;
                 for (var startNext = endOfBlock + 1;
-                    startNext <= line.Length - lineInfo[blockIndex + 1] + 1;
+                    startNext <= line.Length - lineInfo[blockIndex + 1];
                     startNext++)
                 {
                     if (line[startNext - 1] == Cell.Black) // если где-то посерединке появилась черная -- нам уже не подойдет нигде.

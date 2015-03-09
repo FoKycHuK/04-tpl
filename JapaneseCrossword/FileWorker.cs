@@ -43,8 +43,8 @@ namespace JapaneseCrossword
 
         public static void WriteToFile(string fileName, Cell[,] field)
         {
-            if (!File.Exists(fileName))
-                File.Create(fileName);
+            //if (!File.Exists(fileName))
+            //    File.Create(fileName);
             var data = new StringBuilder();
             for (var i = 0; i < field.GetLength(0); i++)
             {

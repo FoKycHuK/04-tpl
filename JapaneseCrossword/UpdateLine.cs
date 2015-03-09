@@ -24,11 +24,15 @@ namespace JapaneseCrossword
         public Cell[] GetAnswer()
         {
             for (var i = 0; i <= line.Length - lineInfo[0]; i++)
+            {
+                if (i > 0 && line[i - 1] == Cell.Black)
+                    break;
                 if (SomethingRecursion(i, 0))
                 {
                     for (var j = 0; j < i; j++)
                         possibleWhite[j] = true;
                 }
+            }
             var ans = new Cell[line.Length];
             for (var i = 0; i < line.Length; i++)
             {
@@ -38,8 +42,8 @@ namespace JapaneseCrossword
                 if (possibleBlack[i] != possibleWhite[i]) 
                     ans[i] = possibleWhite[i] ? Cell.White : Cell.Black;
 
-                if (line[i] != Cell.Unknown && 
-                    ans[i] != Cell.Unknown && 
+                if (line[i] != Cell.Unknown &&
+                    ans[i] != Cell.Unknown &&
                     ans[i] != line[i]) // если мы знали до этого, а нашли другое -- плохо.
                     throw new ArgumentException("Incorrect crossword");
 
@@ -84,6 +88,7 @@ namespace JapaneseCrossword
             for (var i = endOfBlock; i < line.Length; i++)
                 possibleWhite[i] = true;
             return true;
+
         }
     }
 }

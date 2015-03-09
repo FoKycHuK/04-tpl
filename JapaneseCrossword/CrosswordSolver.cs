@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace JapaneseCrossword
 {
-    public class CrosswordSolver : ICrosswordSolver
+    public class CrosswordSolver1 : ICrosswordSolver // non-TLP
     {
         Queue<int> rowsToWork;
         Queue<int> columnsToWork;
@@ -26,9 +26,9 @@ namespace JapaneseCrossword
                 while (rowsToWork.Count > 0 || columnsToWork.Count > 0)
                 {
                     while (rowsToWork.Count > 0)
-                        UpdateOneLine(cs, false, rowsToWork.Dequeue());
+                        UpdateLine.UpdateOneLine(cs, false, rowsToWork.Dequeue(), columnsToWork);
                     while (columnsToWork.Count > 0)
-                        UpdateOneLine(cs, true, columnsToWork.Dequeue());
+                        UpdateLine.UpdateOneLine(cs, true, columnsToWork.Dequeue(), rowsToWork);
                 }
             }
             catch (ArgumentException) { return SolutionStatus.IncorrectCrossword; }
@@ -40,21 +40,6 @@ namespace JapaneseCrossword
                 if (value == Cell.Unknown)
                     return SolutionStatus.PartiallySolved;
             return SolutionStatus.Solved;
-        }
-
-        void UpdateOneLine(Crossword cs, bool isColumn, int index)
-        {
-            var line = cs.GetLine(isColumn, index);
-            var res = new UpdateLine(line, isColumn ? cs.columns[index] : cs.rows[index]).GetAnswer();
-            for (var i = 0; i < line.Length; i++)
-                if (res[i] != line[i])
-                {
-                    if (isColumn && !rowsToWork.Contains(i))
-                        rowsToWork.Enqueue(i);
-                    if (!isColumn && !columnsToWork.Contains(i))
-                        columnsToWork.Enqueue(i);
-                }
-            cs.SetLine(isColumn, index, res);
         }
     }
 }

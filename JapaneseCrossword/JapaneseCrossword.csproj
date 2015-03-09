@@ -49,6 +49,7 @@
     <Compile Include="CrosswordSolverTests.cs" />
     <Compile Include="FileWorker.cs" />
     <Compile Include="ICrosswordSolver.cs" />
+    <Compile Include="TLPSolver.cs" />
     <Compile Include="UpdateLine.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

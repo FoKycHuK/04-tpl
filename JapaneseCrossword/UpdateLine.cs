@@ -13,7 +13,17 @@ namespace JapaneseCrossword
         bool[] possibleBlack;
         bool[] possibleWhite;
 
-        public UpdateLine(Cell[] line, List<int> lineInfo)
+        static public void UpdateOneLine(Crossword cs, bool isColumn, int index, Queue<int> otherLinesToWork)
+        {
+            var line = cs.GetLine(isColumn, index);
+            var res = new UpdateLine(line, isColumn ? cs.columns[index] : cs.rows[index]).GetAnswer();
+            for (var i = 0; i < line.Length; i++)
+                if (res[i] != line[i] && !otherLinesToWork.Contains(i))
+                    otherLinesToWork.Enqueue(i);
+            cs.SetLine(isColumn, index, res);
+        }
+
+        UpdateLine(Cell[] line, List<int> lineInfo)
         {
             this.line = line;
             possibleBlack = new bool[line.Length];
@@ -21,7 +31,7 @@ namespace JapaneseCrossword
             this.lineInfo = lineInfo;
         }
 
-        public Cell[] GetAnswer()
+        Cell[] GetAnswer()
         {
             for (var i = 0; i <= line.Length - lineInfo[0]; i++)
             {

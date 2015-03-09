@@ -32,15 +32,14 @@ namespace JapaneseCrossword
             var ans = new Cell[line.Length];
             for (var i = 0; i < line.Length; i++)
             {
-                if (line[i] != Cell.Unknown) // если мы знаем цвет заранее -- так и оставим.
-                {
-                    ans[i] = line[i];
-                    continue;
-                }
                 if (!possibleBlack[i] && !possibleWhite[i])
                     throw new ArgumentException("Incorrect crossword");
                 if (possibleBlack[i] != possibleWhite[i])
                     ans[i] = possibleWhite[i] ? Cell.White : Cell.Black;
+                if (line[i] != Cell.Unknown && ans[i] != Cell.Unknown && ans[i] != line[i])
+                    throw new ArgumentException("Incorrect crossword");
+                if (line[i] != Cell.Unknown) // если мы знаем цвет заранее -- так и оставим.
+                    ans[i] = line[i];
             }
             return ans;
         }

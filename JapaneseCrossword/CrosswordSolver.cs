@@ -32,7 +32,7 @@ namespace JapaneseCrossword
                 }
             }
             catch (ArgumentException) { return SolutionStatus.IncorrectCrossword; }
-            //MakeOneLine(cs, false, 1);
+
             try { FileWorker.WriteToFile(outputFilePath, cs.field); }
             catch (ArgumentException) { return SolutionStatus.BadOutputFilePath; }
 

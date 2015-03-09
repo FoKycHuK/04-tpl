@@ -34,10 +34,15 @@ namespace JapaneseCrossword
             {
                 if (!possibleBlack[i] && !possibleWhite[i])
                     throw new ArgumentException("Incorrect crossword");
-                if (possibleBlack[i] != possibleWhite[i])
+
+                if (possibleBlack[i] != possibleWhite[i]) 
                     ans[i] = possibleWhite[i] ? Cell.White : Cell.Black;
-                if (line[i] != Cell.Unknown && ans[i] != Cell.Unknown && ans[i] != line[i])
+
+                if (line[i] != Cell.Unknown && 
+                    ans[i] != Cell.Unknown && 
+                    ans[i] != line[i]) // если мы знали до этого, а нашли другое -- плохо.
                     throw new ArgumentException("Incorrect crossword");
+
                 if (line[i] != Cell.Unknown) // если мы знаем цвет заранее -- так и оставим.
                     ans[i] = line[i];
             }

@@ -26,9 +26,9 @@ namespace JapaneseCrossword
                 while (rowsToWork.Count > 0 || columnsToWork.Count > 0)
                 {
                     while (rowsToWork.Count > 0)
-                        MakeOneLine(cs, false, rowsToWork.Dequeue());
+                        UpdateOneLine(cs, false, rowsToWork.Dequeue());
                     while (columnsToWork.Count > 0)
-                        MakeOneLine(cs, true, columnsToWork.Dequeue());
+                        UpdateOneLine(cs, true, columnsToWork.Dequeue());
                 }
             }
             catch (ArgumentException) { return SolutionStatus.IncorrectCrossword; }
@@ -42,7 +42,7 @@ namespace JapaneseCrossword
             return SolutionStatus.Solved;
         }
 
-        void MakeOneLine(Crossword cs, bool isColumn, int index)
+        void UpdateOneLine(Crossword cs, bool isColumn, int index)
         {
             var line = cs.GetLine(isColumn, index);
             var res = new UpdateLine(line, isColumn ? cs.columns[index] : cs.rows[index]).GetAnswer();

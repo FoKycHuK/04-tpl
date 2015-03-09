@@ -25,8 +25,8 @@ namespace JapaneseCrossword
         {
             for (var i = 0; i <= line.Length - lineInfo[0]; i++)
             {
-                if (i > 0 && line[i - 1] == Cell.Black)
-                    break;
+                if (i > 0 && line[i - 1] == Cell.Black) // Rest In Peace
+                    break; 
                 if (SomethingRecursion(i, 0))
                 {
                     for (var j = 0; j < i; j++)

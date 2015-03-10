@@ -26,9 +26,9 @@ namespace JapaneseCrossword
                 while (rowsToWork.Count > 0 || columnsToWork.Count > 0)
                 {
                     while (rowsToWork.Count > 0)
-                        UpdateLine.UpdateOneLine(cs, false, rowsToWork.Dequeue(), columnsToWork);
+                        LineUpdater.UpdateOneLine(cs, false, rowsToWork.Dequeue(), columnsToWork);
                     while (columnsToWork.Count > 0)
-                        UpdateLine.UpdateOneLine(cs, true, columnsToWork.Dequeue(), rowsToWork);
+                        LineUpdater.UpdateOneLine(cs, true, columnsToWork.Dequeue(), rowsToWork);
                 }
             }
             catch (ArgumentException) { return SolutionStatus.IncorrectCrossword; }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace JapaneseCrossword
 {
-    public class UpdateLine
+    public class LineUpdater
     {
         Cell[] line;
         List<int> lineInfo;
@@ -16,14 +16,14 @@ namespace JapaneseCrossword
         static public void UpdateOneLine(Crossword cs, bool isColumn, int index, Queue<int> otherLinesToWork)
         {
             var line = cs.GetLine(isColumn, index);
-            var res = new UpdateLine(line, isColumn ? cs.columns[index] : cs.rows[index]).GetAnswer();
+            var res = new LineUpdater(line, isColumn ? cs.columns[index] : cs.rows[index]).GetAnswer();
             for (var i = 0; i < line.Length; i++)
                 if (res[i] != line[i] && !otherLinesToWork.Contains(i))
                     otherLinesToWork.Enqueue(i);
             cs.SetLine(isColumn, index, res);
         }
 
-        UpdateLine(Cell[] line, List<int> lineInfo)
+        LineUpdater(Cell[] line, List<int> lineInfo)
         {
             this.line = line;
             possibleBlack = new bool[line.Length];

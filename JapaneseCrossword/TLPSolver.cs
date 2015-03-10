@@ -32,7 +32,7 @@ namespace JapaneseCrossword
                     while (rowsToWork.Count > 0)
                     {
                         var index = rowsToWork.Dequeue();
-                        var task = new Task(() => UpdateLine.UpdateOneLine(cs, false, index, columnsToWork));
+                        var task = new Task(() => LineUpdater.UpdateOneLine(cs, false, index, columnsToWork));
                         task.Start();
                         set.Add(task);
                     }
@@ -41,7 +41,7 @@ namespace JapaneseCrossword
                     while (columnsToWork.Count > 0)
                     {
                         var index = columnsToWork.Dequeue();
-                        var task = new Task(() => UpdateLine.UpdateOneLine(cs, true, index, rowsToWork));
+                        var task = new Task(() => LineUpdater.UpdateOneLine(cs, true, index, rowsToWork));
                         task.Start();
                         set.Add(task);
                     }

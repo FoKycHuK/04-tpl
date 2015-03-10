@@ -46,12 +46,14 @@
   <ItemGroup>
     <Compile Include="Crossword.cs" />
     <Compile Include="CrosswordSolver.cs" />
-    <Compile Include="CrosswordSolverTests.cs" />
+    <Compile Include="Tests\CalendarTests.cs" />
+    <Compile Include="Tests\CrosswordSolverTests.cs" />
     <Compile Include="FileWorker.cs" />
-    <Compile Include="FileWorkerTests.cs" />
+    <Compile Include="Tests\FileWorkerTests.cs" />
     <Compile Include="ICrosswordSolver.cs" />
+    <Compile Include="Tests\TestLineUpdater.cs" />
     <Compile Include="TLPSolver.cs" />
-    <Compile Include="UpdateLine.cs" />
+    <Compile Include="LineUpdater.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SolutionStatus.cs" />
@@ -92,9 +94,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="NewFolder1\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

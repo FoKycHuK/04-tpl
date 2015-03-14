@@ -16,10 +16,10 @@ namespace JapaneseCrossword
         {
             var cs = FileWorker.ReadFromFile("TestFiles\\SampleInput.txt");
             var sb = new StringBuilder();
-            foreach (var list in cs.rows)
+            foreach (var list in cs.RowsBlocks)
                 foreach (var value in list)
                     sb.Append(value);
-            foreach (var list in cs.columns)
+            foreach (var list in cs.ColumnsBlocks)
                 foreach (var value in list)
                     sb.Append(value);
             Assert.AreEqual(sb.ToString(), "2112");

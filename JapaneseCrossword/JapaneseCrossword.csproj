@@ -44,9 +44,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseCrosswordSolver.cs" />
     <Compile Include="Crossword.cs" />
     <Compile Include="CrosswordSolver.cs" />
-    <Compile Include="Tests\CalendarTests.cs" />
+    <Compile Include="IncorrectCrosswordException.cs" />
+    <Compile Include="Tests\CrosswordTests.cs" />
     <Compile Include="Tests\CrosswordSolverTests.cs" />
     <Compile Include="FileWorker.cs" />
     <Compile Include="Tests\FileWorkerTests.cs" />

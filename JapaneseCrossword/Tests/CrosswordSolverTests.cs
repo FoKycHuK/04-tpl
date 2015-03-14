@@ -1,18 +1,18 @@
 using System.IO;
 using NUnit.Framework;
+using System.Diagnostics;
 
 namespace JapaneseCrossword
 {
     [TestFixture]
-    //todo: в письме ты написал, что многопоточная реализация почти в два раза побеждает однопоточную. Как был сделан такой вывод? Где тест/бенчмарк?
     public class CrosswordSolverTests
     {
-        private CrosswordSolver solver;
+        private TLPSolver solver;
 
         [TestFixtureSetUp]
         public void SetUp()
         {
-            solver = new CrosswordSolver();
+            solver = new TLPSolver();
         }
 
         [Test]
@@ -82,6 +82,23 @@ namespace JapaneseCrossword
             var solutionStatus = solver.Solve(inputFilePath, outputFilePath);
             Assert.AreEqual(SolutionStatus.PartiallySolved, solutionStatus);
             CollectionAssert.AreEqual(File.ReadAllText(correctOutputFilePath), File.ReadAllText(outputFilePath));
+        }
+
+        [Test]
+        public void TLP_faster_than_simple() // also harder, better and stronger.
+        {
+            var solver = new CrosswordSolver();
+            var TLPsolver = new TLPSolver();
+            var stopwatch = Stopwatch.StartNew();
+            var input = @"TestFiles\Flower.txt";
+            solver.Solve(input, Path.GetRandomFileName());
+            var simpleTime = stopwatch.ElapsedMilliseconds;
+            stopwatch.Stop();
+            stopwatch = Stopwatch.StartNew();
+            TLPsolver.Solve(input, Path.GetRandomFileName());
+            var TLPTime = stopwatch.ElapsedMilliseconds;
+            stopwatch.Stop();
+            Assert.IsTrue(TLPTime < simpleTime);
         }
     }
 }

@@ -15,31 +15,29 @@ namespace JapaneseCrossword
 
     public class Crossword
     {
-        //todo: есть общие правила форматирования для c#, все что Public обычно пишется в большой буквы.
-        public readonly Cell[,] field;
-        //todo: когда используешь rows и columns ну никак не очевидно, что внутри лежат описания блоков. rowBlocks/rowGroups гораздо круче читались бы 
-        public readonly List<int>[] rows;
-        public readonly List<int>[] columns;
-        public readonly int rowCount;
-        public readonly int columnCount;
+        public readonly Cell[,] Field;
+        public readonly List<int>[] RowsBlocks;
+        public readonly List<int>[] ColumnsBlocks;
+        public readonly int RowCount;
+        public readonly int ColumnCount;
 
         public Crossword(List<int>[] rows, List<int>[] columns)
         {
-            this.rows = rows;
-            this.columns = columns;
-            rowCount = rows.Length;
-            columnCount = columns.Length;
-            field = new Cell[rowCount, columnCount];
+            this.RowsBlocks = rows;
+            this.ColumnsBlocks = columns;
+            RowCount = rows.Length;
+            ColumnCount = columns.Length;
+            Field = new Cell[RowCount, ColumnCount];
         }
 
         public Cell[] GetLine(bool isColumn, int index)
         {
-            var ans = new Cell[isColumn ? rowCount : columnCount];
+            var ans = new Cell[isColumn ? RowCount : ColumnCount];
             for (var i = 0; i < ans.Length; i++)
             {
                 var x = isColumn ? i : index;
                 var y = isColumn ? index : i;
-                ans[i] = field[x, y];
+                ans[i] = Field[x, y];
             }
             return ans;
         }
@@ -50,7 +48,7 @@ namespace JapaneseCrossword
             {
                 var x = isColumn ? i : index;
                 var y = isColumn ? index : i;
-                field[x, y] = line[i];
+                Field[x, y] = line[i];
             }
         }
     }

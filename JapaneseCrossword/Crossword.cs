@@ -15,7 +15,9 @@ namespace JapaneseCrossword
 
     public class Crossword
     {
+        //todo: есть общие правила форматирования для c#, все что Public обычно пишется в большой буквы.
         public readonly Cell[,] field;
+        //todo: когда используешь rows и columns ну никак не очевидно, что внутри лежат описания блоков. rowBlocks/rowGroups гораздо круче читались бы 
         public readonly List<int>[] rows;
         public readonly List<int>[] columns;
         public readonly int rowCount;

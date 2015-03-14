@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 namespace JapaneseCrossword.Tests
 {
     [TestFixture]
+    //todo: кажется, что возможных вариантов поведения гораздо больше, чем написано тестов. Неплохо было бы еще интересных добавить
     public class TestLineUpdater
     {
         [Test]

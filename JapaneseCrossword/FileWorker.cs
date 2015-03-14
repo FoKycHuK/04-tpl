@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace JapaneseCrossword
 {
+    //todo: (переделывать необязательно) нестатические классы облегчают тестирование (можно обойтись исключительно модульными тестами и мочить абстракцию), позволяют более гибко работать с кодом
     public static class FileWorker
     {
+        //todo: неговорящее название. Лучше cellToCharMap или что-нибудь в таком духе
         static Dictionary<Cell, char> formatter = new Dictionary<Cell, char>()
         {
             {Cell.Unknown, '?'},
@@ -50,6 +52,7 @@ namespace JapaneseCrossword
             {
                 for (var j = 0; j < field.GetLength(1); j++)
                     data.Append(formatter[field[i, j]]);
+                //todo: будет работать, но привет пользователям маков и линуксоидам!
                 data.Append("\r\n");
             }
             File.WriteAllText(fileName, data.ToString());

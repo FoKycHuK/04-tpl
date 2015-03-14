@@ -44,17 +44,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseCrosswordSolver.cs" />
+    <Compile Include="Solvers\BaseCrosswordSolver.cs" />
     <Compile Include="Crossword.cs" />
-    <Compile Include="CrosswordSolver.cs" />
+    <Compile Include="Solvers\CrosswordSolver.cs" />
     <Compile Include="IncorrectCrosswordException.cs" />
     <Compile Include="Tests\CrosswordTests.cs" />
     <Compile Include="Tests\CrosswordSolverTests.cs" />
     <Compile Include="FileWorker.cs" />
     <Compile Include="Tests\FileWorkerTests.cs" />
-    <Compile Include="ICrosswordSolver.cs" />
+    <Compile Include="Solvers\ICrosswordSolver.cs" />
     <Compile Include="Tests\TestLineUpdater.cs" />
-    <Compile Include="TLPSolver.cs" />
+    <Compile Include="Solvers\TLPSolver.cs" />
     <Compile Include="LineUpdater.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -10,8 +10,7 @@ namespace JapaneseCrossword
     //todo: (переделывать необязательно) нестатические классы облегчают тестирование (можно обойтись исключительно модульными тестами и мочить абстракцию), позволяют более гибко работать с кодом
     public static class FileWorker
     {
-        //todo: неговорящее название. Лучше cellToCharMap или что-нибудь в таком духе
-        static Dictionary<Cell, char> formatter = new Dictionary<Cell, char>()
+        static Dictionary<Cell, char> cellToCharMap = new Dictionary<Cell, char>()
         {
             {Cell.Unknown, '?'},
             {Cell.Black, '*'},
@@ -45,15 +44,12 @@ namespace JapaneseCrossword
 
         public static void WriteToFile(string fileName, Cell[,] field)
         {
-            //if (!File.Exists(fileName))
-            //    File.Create(fileName);
             var data = new StringBuilder();
             for (var i = 0; i < field.GetLength(0); i++)
             {
                 for (var j = 0; j < field.GetLength(1); j++)
-                    data.Append(formatter[field[i, j]]);
-                //todo: будет работать, но привет пользователям маков и линуксоидам!
-                data.Append("\r\n");
+                    data.Append(cellToCharMap[field[i, j]]);
+                data.Append(Environment.NewLine);
             }
             File.WriteAllText(fileName, data.ToString());
         }

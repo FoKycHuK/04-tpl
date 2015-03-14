@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace JapaneseCrossword
 {
-    public class IncorrectCrosswordException : Exception
+    public class IncorrectLineUpdaterInputDataException : Exception
     {
     }
 }

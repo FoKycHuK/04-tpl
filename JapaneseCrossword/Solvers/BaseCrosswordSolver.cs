@@ -35,7 +35,7 @@ namespace JapaneseCrossword
             {
                 Start();
             }
-            catch (IncorrectCrosswordException)
+            catch (IncorrectLineUpdaterInputDataException)
             {
                 return SolutionStatus.IncorrectCrossword;
             }

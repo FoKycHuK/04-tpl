@@ -8,6 +8,7 @@ namespace JapaneseCrossword
 {
     public class LineUpdater
     {
+        Dictionary<Point, bool> cache;
         Cell[] line;
         List<int> lineBlocks;
         bool[] possibleBlack;
@@ -19,49 +20,41 @@ namespace JapaneseCrossword
             possibleBlack = new bool[line.Length];
             possibleWhite = new bool[line.Length];
             this.lineBlocks = lineInfo;
+            cache = new Dictionary<Point, bool>();
         }
 
         public Cell[] GetAnswer()
         {
-            //todo: этот цикл не нужен, если занести его в рекурсию, тогда в рекурсивной функции мы будем перебирать начало текущего блока, а не следующего. Тогда не будет этого дублирования
-            for (var i = 0; i <= line.Length - lineBlocks[0]; i++)
-            {
-                if (i > 0 && line[i - 1] == Cell.Black)
-                    break; 
-                if (PermutationExists(i, 0))
-                    UpdatePossibilities(false, 0, i);
-            }
+            PermutationExists(-1, -1);
+
             var ans = new Cell[line.Length];
             for (var i = 0; i < line.Length; i++)
             {
                 if (!possibleBlack[i] && !possibleWhite[i])
                     throw new IncorrectLineUpdaterInputDataException();
 
-                if (possibleBlack[i] != possibleWhite[i]) 
+                if (possibleBlack[i] != possibleWhite[i])
                     ans[i] = possibleWhite[i] ? Cell.White : Cell.Black;
-
-                //todo: если так получилось, то это какой-то плохой back-tracking, он не должен выдавать неконсистентные результаты. Лучше сразу отрубать такие ветки перебора (это и быстрее будет)
-                //if (line[i] != Cell.Unknown &&
-                //    ans[i] != Cell.Unknown &&
-                //    ans[i] != line[i]) // если мы знали до этого, а нашли другое -- плохо.
-                //    throw new IncorrectLineUpdaterInputDataException();
-
-                //if (line[i] != Cell.Unknown) // если мы знаем цвет заранее -- так и оставим.
-                //    ans[i] = line[i];
             }
             return ans;
         }
 
-        //todo: название метода совершенно не помогает понять, что он делает. Как его лучше обозвать, чтобы была понятна семантика?
-        //todo: число комментариев просто зашкаливает, но они повторяют код, лучше написать код понятней, чем держать в нем комменты
-        bool PermutationExists(int startIndex, int blockIndex) // осторожно, опасно
+        bool PermutationExists(int startIndex, int blockIndex)
         {
             //todo: за время существования LineUpdater будет происходить много перекрывающихся вызовов рекурсии, которые в данном случае отлично кэшируются, это ускорит алгоритм
-
-            var endOfBlock = startIndex + lineBlocks[blockIndex];
-
-            if (!CanPlaceBlackBlock(startIndex, endOfBlock))
-                return false;
+            var point = new Point(startIndex, blockIndex);
+            if (cache.Keys.Contains(point))
+                return cache[point];
+            var endOfBlock = startIndex;
+            if (blockIndex != -1)
+            {
+                endOfBlock += lineBlocks[blockIndex];
+                if (!CanPlaceBlackBlock(startIndex, endOfBlock))
+                {
+                    cache.Add(point, false);
+                    return false;
+                }
+            }
             if (blockIndex != lineBlocks.Count - 1)
             {
                 var res = false;
@@ -69,22 +62,32 @@ namespace JapaneseCrossword
                     startNext <= line.Length - lineBlocks[blockIndex + 1];
                     startNext++)
                 {
-                    if (line[startNext - 1] == Cell.Black) // если где-то посерединке появилась черная -- нам уже не подойдет нигде.
+                    if (startNext != 0 && line[startNext - 1] == Cell.Black) // если где-то посерединке появилась черная -- нам уже не подойдет нигде.
                         break;
                     if (PermutationExists(startNext, blockIndex + 1)) // если такой вариант оказался норм, значит можно сразу расставить.
                     {
                         res = true; //и такой вариант тоже может быть.
-                        UpdatePossibilities(true, startIndex, endOfBlock);
-                        UpdatePossibilities(false, endOfBlock, startNext);
+                        if (blockIndex != -1)
+                        {
+                            UpdatePossibilities(true, startIndex, endOfBlock);
+                            UpdatePossibilities(false, endOfBlock, startNext);
+                        }
+                        else
+                            UpdatePossibilities(false, 0, startNext);
                     }
                 }
+                cache.Add(point, res);
                 return res;
             }
             for (var i = endOfBlock; i < line.Length; i++)
                 if (line[i] == Cell.Black) //если после последнего блока есть еще черные -- плохо
+                {
+                    cache.Add(point, false);
                     return false;
+                }
             UpdatePossibilities(true, startIndex, endOfBlock);
             UpdatePossibilities(false, endOfBlock, line.Length);
+            cache.Add(point, true);
             return true;
 
         }
@@ -98,7 +101,7 @@ namespace JapaneseCrossword
 
         bool CanPlaceBlackBlock(int startIndex, int endOfBlock)
         {
-            for (var i = startIndex; i < endOfBlock; i++) // проверяем на то, что текущий блок можно разместить.
+            for (var i = startIndex; i < endOfBlock; i++)
                 if (line[i] == Cell.White)
                     return false;
             return true;

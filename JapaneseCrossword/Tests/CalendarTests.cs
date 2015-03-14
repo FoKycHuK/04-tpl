@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 namespace JapaneseCrossword.Tests
 {
     [TestFixture]
+    //todo: наверняка, тестируется не календарь, а что-то другое?:)
     public class CalendarTests
     {
         [Test]

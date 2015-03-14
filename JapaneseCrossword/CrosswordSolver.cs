@@ -10,9 +10,17 @@ namespace JapaneseCrossword
 
         public SolutionStatus Solve(string inputFilePath, string outputFilePath)
         {
+            //todo: cs - неговорящее название, не отображает семантику. Переменных из нескольких букв стоит избегать
             Crossword cs = null;
-            try { cs = FileWorker.ReadFromFile(inputFilePath); }
-            catch { return SolutionStatus.BadInputFilePath; }
+            //todo: поправил форматирование, изменить остальные единообразно, читать стает проще
+            try
+            {
+                cs = FileWorker.ReadFromFile(inputFilePath);
+            }
+            catch
+            {
+                return SolutionStatus.BadInputFilePath;
+            }
 
             rowsToWork = new Queue<int>();
             columnsToWork = new Queue<int>();
@@ -34,6 +42,7 @@ namespace JapaneseCrossword
             catch (ArgumentException) { return SolutionStatus.IncorrectCrossword; }
 
             try { FileWorker.WriteToFile(outputFilePath, cs.field); }
+            //todo: тут может вылететь не только ArgumentException, другие исключения тоже соответствуют описанию BadOutputFilePath
             catch (ArgumentException) { return SolutionStatus.BadOutputFilePath; }
 
             foreach (var value in cs.field)

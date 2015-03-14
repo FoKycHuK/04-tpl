@@ -4,6 +4,7 @@ using NUnit.Framework;
 namespace JapaneseCrossword
 {
     [TestFixture]
+    //todo: в письме ты написал, что многопоточная реализация почти в два раза побеждает однопоточную. Как был сделан такой вывод? Где тест/бенчмарк?
     public class CrosswordSolverTests
     {
         private CrosswordSolver solver;

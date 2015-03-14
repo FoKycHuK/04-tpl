@@ -29,6 +29,7 @@ namespace JapaneseCrossword
                 while (rowsToWork.Count > 0 || columnsToWork.Count > 0)
                 {
                     var set = new HashSet<Task>();
+                    //todo: два раза написано одно и тоже, стоит вынести общий код в один метод
                     while (rowsToWork.Count > 0)
                     {
                         var index = rowsToWork.Dequeue();

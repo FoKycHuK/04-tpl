@@ -8,7 +8,7 @@ namespace JapaneseCrossword
 {
     public class LineUpdater
     {
-        Dictionary<Point, bool> cache;
+        //Dictionary<Point, bool> cache;
         Cell[] line;
         List<int> lineBlocks;
         bool[] possibleBlack;
@@ -20,7 +20,7 @@ namespace JapaneseCrossword
             possibleBlack = new bool[line.Length];
             possibleWhite = new bool[line.Length];
             this.lineBlocks = lineInfo;
-            cache = new Dictionary<Point, bool>();
+            //cache = new Dictionary<Point, bool>();
         }
 
         public Cell[] GetAnswer()
@@ -41,17 +41,16 @@ namespace JapaneseCrossword
 
         bool PermutationExists(int startIndex, int blockIndex)
         {
-            //todo: за время существования LineUpdater будет происходить много перекрывающихся вызовов рекурсии, которые в данном случае отлично кэшируются, это ускорит алгоритм
             var point = new Point(startIndex, blockIndex);
-            if (cache.Keys.Contains(point))
-                return cache[point];
+            //if (cache.Keys.Contains(point))
+            //    return cache[point];
             var endOfBlock = startIndex;
             if (blockIndex != -1)
             {
                 endOfBlock += lineBlocks[blockIndex];
                 if (!CanPlaceBlackBlock(startIndex, endOfBlock))
                 {
-                    cache.Add(point, false);
+                    //cache.Add(point, false);
                     return false;
                 }
             }
@@ -76,18 +75,18 @@ namespace JapaneseCrossword
                             UpdatePossibilities(false, 0, startNext);
                     }
                 }
-                cache.Add(point, res);
+                //cache.Add(point, res);
                 return res;
             }
             for (var i = endOfBlock; i < line.Length; i++)
                 if (line[i] == Cell.Black) //если после последнего блока есть еще черные -- плохо
                 {
-                    cache.Add(point, false);
+                    //cache.Add(point, false);
                     return false;
                 }
             UpdatePossibilities(true, startIndex, endOfBlock);
             UpdatePossibilities(false, endOfBlock, line.Length);
-            cache.Add(point, true);
+            //cache.Add(point, true);
             return true;
 
         }

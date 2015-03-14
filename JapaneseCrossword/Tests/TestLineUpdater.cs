@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 namespace JapaneseCrossword.Tests
 {
     [TestFixture]
-    //todo: кажется, что возможных вариантов поведения гораздо больше, чем написано тестов. Неплохо было бы еще интересных добавить
     public class TestLineUpdater
     {
         [Test]
@@ -39,6 +38,48 @@ namespace JapaneseCrossword.Tests
             for (var i = 0; i < line.Length; i++)
                 if (i != 7)
                     Assert.IsTrue(newLine[i] == Cell.White);
+        }
+
+        [Test]
+        public void Can_place_long_right()
+        {
+            var line = new Cell[10];
+            line[0] = Cell.Black;
+            line[5] = Cell.Black;
+            line[9] = Cell.Black;
+            var updater = new LineUpdater(line, new List<int>() { 1, 1, 3 });
+            var newLine = updater.GetAnswer();
+            for (var i = 7; i < 10; i++)
+                Assert.IsTrue(newLine[i] == Cell.Black);
+
+        }
+
+        [Test]
+        public void Do_not_place_long_if_not_sure()
+        {
+            var line = new Cell[10];
+            line[0] = Cell.Black;
+            line[5] = Cell.Black;
+            var updater = new LineUpdater(line, new List<int>() { 1, 1, 3 });
+            var newLine = updater.GetAnswer();
+            for (var i = 7; i < 10; i++)
+                Assert.IsTrue(newLine[i] == Cell.Unknown);
+
+        }
+
+        [Test]
+        public void Said_that_input_data_is_incorrect()
+        {
+            var line = new Cell[10];
+            for (var i = 0; i < line.Length; i++)
+                line[i] = Cell.White;
+            var updater = new LineUpdater(line, new List<int>() { 1 });
+            try
+            {
+                var newLine = updater.GetAnswer();
+                Assert.Fail();
+            }
+            catch (IncorrectLineUpdaterInputDataException) { }
         }
     }
 }

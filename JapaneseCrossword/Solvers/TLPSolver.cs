@@ -9,8 +9,11 @@ namespace JapaneseCrossword
     public class TLPSolver : BaseCrosswordSolver
     {
         HashSet<Task> setWithCurTasks;
-        protected override void Start()
+        Crossword crossword;
+
+        protected override void Start(Crossword crossword)
         {
+            this.crossword = crossword;
             setWithCurTasks = new HashSet<Task>();
 
             try
@@ -32,7 +35,7 @@ namespace JapaneseCrossword
             while (queue.Count > 0)
             {
                 var index = queue.Dequeue();
-                var task = new Task(() => UpdateOneLine(isColumn, index));
+                var task = new Task(() => UpdateOneLine(crossword, isColumn, index));
                 task.Start();
                 setWithCurTasks.Add(task);
             }

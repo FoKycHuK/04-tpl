@@ -5,14 +5,14 @@ namespace JapaneseCrossword
 {
     public class CrosswordSolver : BaseCrosswordSolver
     {
-        protected override void Start()
+        protected override void Start(Crossword crossword)
         {
             while (rowsToWork.Count > 0 || columnsToWork.Count > 0)
             {
                 while (rowsToWork.Count > 0)
-                    UpdateOneLine(false, rowsToWork.Dequeue());
+                    UpdateOneLine(crossword, false, rowsToWork.Dequeue());
                 while (columnsToWork.Count > 0)
-                    UpdateOneLine(true, columnsToWork.Dequeue());
+                    UpdateOneLine(crossword, true, columnsToWork.Dequeue());
             }
         }
     }

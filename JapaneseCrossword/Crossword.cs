@@ -21,13 +21,13 @@ namespace JapaneseCrossword
         public readonly int RowCount;
         public readonly int ColumnCount;
 
-        public Crossword(List<int>[] rows, List<int>[] columns)
+        public Crossword(List<int>[] rows, List<int>[] columns, Cell[,] field = null)
         {
             this.RowsBlocks = rows;
             this.ColumnsBlocks = columns;
             RowCount = rows.Length;
             ColumnCount = columns.Length;
-            Field = new Cell[RowCount, ColumnCount];
+            Field = field != null ? field : new Cell[RowCount, ColumnCount];
         }
 
         public Cell[] GetLine(bool isColumn, int index)
@@ -50,6 +50,12 @@ namespace JapaneseCrossword
                 var y = isColumn ? index : i;
                 Field[x, y] = line[i];
             }
+        }
+
+        public Crossword Copy()
+        {
+            var copy = new Crossword(RowsBlocks, ColumnsBlocks,(Cell[,])Field.Clone());
+            return copy;
         }
     }
 }

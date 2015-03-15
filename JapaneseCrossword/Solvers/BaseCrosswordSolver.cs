@@ -10,10 +10,11 @@ namespace JapaneseCrossword
     {
         protected Queue<int> rowsToWork;
         protected Queue<int> columnsToWork;
-        protected Crossword crossword;
 
         public SolutionStatus Solve(string inputFilePath, string outputFilePath)
         {
+            Crossword crossword = null;
+
             try
             {
                 crossword = FileWorker.ReadFromFile(inputFilePath);
@@ -23,17 +24,9 @@ namespace JapaneseCrossword
                 return SolutionStatus.BadInputFilePath;
             }
 
-            rowsToWork = new Queue<int>();
-            columnsToWork = new Queue<int>();
-
-            for (var i = 0; i < crossword.RowCount; i++)
-                rowsToWork.Enqueue(i);
-            for (var i = 0; i < crossword.ColumnCount; i++)
-                columnsToWork.Enqueue(i);
-
             try
             {
-                Start();
+                crossword = IterateLineLook(crossword);
             }
             catch (IncorrectLineUpdaterInputDataException)
             {
@@ -55,7 +48,21 @@ namespace JapaneseCrossword
             return SolutionStatus.Solved;
         }
 
-        protected void UpdateOneLine(bool isColumn, int index)
+        public Crossword IterateLineLook(Crossword crossword) //эта штука самостоятельна. отделил просто чтоб не копировать код и использовать ее в бек-трекинге.
+        {
+            rowsToWork = new Queue<int>();
+            columnsToWork = new Queue<int>();
+
+            for (var i = 0; i < crossword.RowCount; i++)
+                rowsToWork.Enqueue(i);
+            for (var i = 0; i < crossword.ColumnCount; i++)
+                columnsToWork.Enqueue(i);
+
+            Start(crossword);
+
+            return crossword;
+        }
+        protected void UpdateOneLine(Crossword crossword, bool isColumn, int index)
         {
             var otherLinesToWork = isColumn ? rowsToWork : columnsToWork;
             var line = crossword.GetLine(isColumn, index);
@@ -67,7 +74,7 @@ namespace JapaneseCrossword
         }
 
 
-        protected abstract void Start();
+        protected abstract void Start(Crossword crossword);
 
 
     }

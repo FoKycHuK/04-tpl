@@ -6,26 +6,39 @@ using System.Threading.Tasks;
 
 namespace JapaneseCrossword
 {
-    public class BackTracking
+    public class BackTracker
     {
-        Crossword res;
-        ICrosswordSolver solver;
+        BaseCrosswordSolver solver;
 
-        public BackTracking(Crossword crossword)
+        public BackTracker(BaseCrosswordSolver solver)
         {
-            solver = new CrosswordSolver();
-            res = crossword;
+            this.solver = solver;
         }
 
-        public Crossword GetAnswer()
+        public Crossword GetAnswerWithBackTracking(Crossword crossword)
         {
-            Try(0, 0);
-            return null;
-        }
-
-        void Try(int x, int y)
-        {
-
+            try
+            {
+                solver.IterateLineLook(crossword);
+            }
+            catch (IncorrectLineUpdaterInputDataException)
+            {
+                return null;
+            }
+            Point unknown = null;
+            for(var i = 0; i < crossword.RowCount; i++)
+                for (var j = 0; j < crossword.ColumnCount; j++)
+                    if (crossword.Field[i, j] == Cell.Unknown)
+                        unknown = new Point(i, j);
+            if (unknown == null)
+                return crossword;
+            var supposition = crossword.Copy();
+            supposition.Field[unknown.X, unknown.Y] = Cell.White;
+            var answer = GetAnswerWithBackTracking(supposition);
+            if (answer != null)
+                return answer;
+            supposition.Field[unknown.X, unknown.Y] = Cell.Black;
+            return GetAnswerWithBackTracking(supposition);
         }
     }
 }

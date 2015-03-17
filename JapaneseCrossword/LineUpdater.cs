@@ -42,6 +42,7 @@ namespace JapaneseCrossword
         bool PermutationExists(int startIndex, int blockIndex)
         {
             var point = new Point(startIndex, blockIndex);
+            //todo: эти комментарии незачем держать в коде, историю о них помнит Git
             //if (cache.Keys.Contains(point))
             //    return cache[point];
             var endOfBlock = startIndex;

@@ -48,6 +48,7 @@ namespace JapaneseCrossword
             return SolutionStatus.Solved;
         }
 
+        //todo: обещал придумать адекватное название, но оно осталось прежним. все еще неубедительное
         public Crossword IterateLineLook(Crossword crossword) //эта штука самостоятельна. отделил просто чтоб не копировать код и использовать ее в бек-трекинге.
         {
             rowsToWork = new Queue<int>();
@@ -58,6 +59,7 @@ namespace JapaneseCrossword
             for (var i = 0; i < crossword.ColumnCount; i++)
                 columnsToWork.Enqueue(i);
 
+            //todo: Название Start не отображает, что происходит внутри, внутри происходит Process
             Start(crossword);
 
             return crossword;

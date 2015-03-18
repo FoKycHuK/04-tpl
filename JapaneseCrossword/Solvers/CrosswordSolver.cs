@@ -5,7 +5,7 @@ namespace JapaneseCrossword
 {
     public class CrosswordSolver : BaseCrosswordSolver
     {
-        protected override void Start(Crossword crossword)
+        protected override void SolveAllTasks(Crossword crossword)
         {
             while (rowsToWork.Count > 0 || columnsToWork.Count > 0)
             {

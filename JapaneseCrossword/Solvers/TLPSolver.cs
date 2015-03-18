@@ -11,7 +11,7 @@ namespace JapaneseCrossword
         HashSet<Task> setWithCurTasks;
         Crossword crossword;
 
-        protected override void Start(Crossword crossword)
+        protected override void SolveAllTasks(Crossword crossword)
         {
             this.crossword = crossword;
             setWithCurTasks = new HashSet<Task>();

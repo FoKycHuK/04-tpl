@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace JapaneseCrossword
 {
-    //todo: имя класса не совпадает с именем файла, в котором он находится
     public class BackTracker
     {
         BaseCrosswordSolver solver;
@@ -16,12 +15,11 @@ namespace JapaneseCrossword
             this.solver = solver;
         }
 
-        //todo: префикс WithBackTracking лишний, по контексту класса можно догадаться как он находит ответ
-        public Crossword GetAnswerWithBackTracking(Crossword crossword)
+        public Crossword GetAnswer(Crossword crossword)
         {
             try
             {
-                solver.IterateLineLook(crossword);
+                solver.SolveObviousLines(crossword);
             }
             //todo: это бесполезное исключение, солвер вполне бы мог возвращать вместо него особый код ответа либо null. на его обработку среда затратит кучу ресурсов, не нужно бросать его
             catch (IncorrectLineUpdaterInputDataException)
@@ -38,11 +36,11 @@ namespace JapaneseCrossword
                 return crossword;
             var supposition = crossword.Copy();
             supposition.Field[unknown.X, unknown.Y] = Cell.White;
-            var answer = GetAnswerWithBackTracking(supposition);
+            var answer = GetAnswer(supposition);
             if (answer != null)
                 return answer;
             supposition.Field[unknown.X, unknown.Y] = Cell.Black;
-            return GetAnswerWithBackTracking(supposition);
+            return GetAnswer(supposition);
         }
     }
 }

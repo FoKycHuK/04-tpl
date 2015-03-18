@@ -8,7 +8,7 @@
             var tracking = new BackTracker(solver);
             //todo: руками проверять, конечно, хорошо, но где тесты на BackTracking?
             var crossword = FileWorker.ReadFromFile("TestFiles\\Winter.txt");
-            var answer = tracking.GetAnswerWithBackTracking(crossword);
+            var answer = tracking.GetAnswer(crossword);
             FileWorker.WriteToFile("lol.txt", answer.Field);
         }
     }

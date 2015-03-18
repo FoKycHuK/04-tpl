@@ -26,7 +26,7 @@ namespace JapaneseCrossword
 
             try
             {
-                crossword = IterateLineLook(crossword);
+                crossword = SolveObviousLines(crossword);
             }
             catch (IncorrectLineUpdaterInputDataException)
             {
@@ -48,8 +48,7 @@ namespace JapaneseCrossword
             return SolutionStatus.Solved;
         }
 
-        //todo: обещал придумать адекватное название, но оно осталось прежним. все еще неубедительное
-        public Crossword IterateLineLook(Crossword crossword) //эта штука самостоятельна. отделил просто чтоб не копировать код и использовать ее в бек-трекинге.
+        public Crossword SolveObviousLines(Crossword crossword) //эта штука самостоятельна. отделил просто чтоб не копировать код и использовать ее в бек-трекинге.
         {
             rowsToWork = new Queue<int>();
             columnsToWork = new Queue<int>();
@@ -59,8 +58,7 @@ namespace JapaneseCrossword
             for (var i = 0; i < crossword.ColumnCount; i++)
                 columnsToWork.Enqueue(i);
 
-            //todo: Название Start не отображает, что происходит внутри, внутри происходит Process
-            Start(crossword);
+            SolveAllTasks(crossword);
 
             return crossword;
         }
@@ -76,7 +74,7 @@ namespace JapaneseCrossword
         }
 
 
-        protected abstract void Start(Crossword crossword);
+        protected abstract void SolveAllTasks(Crossword crossword);
 
 
     }

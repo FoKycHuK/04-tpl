@@ -20,12 +20,17 @@ namespace JapaneseCrossword
             if (solver.SolveObviousLines(crossword) == null)
                 return null;
             Point unknown = null;
-            //todo: почему сразу не выходим, когда нашли точку unknown? это будет работать, но сбивает с толку
-            
-            for(var i = 0; i < crossword.RowCount; i++)
+            for (var i = 0; i < crossword.RowCount; i++)
+            {
                 for (var j = 0; j < crossword.ColumnCount; j++)
                     if (crossword.Field[i, j] == Cell.Unknown)
+                    {
                         unknown = new Point(i, j);
+                        break;
+                    }
+                if (unknown != null)
+                    break;
+            }
             if (unknown == null)
                 return crossword;
             var supposition = crossword.Copy();

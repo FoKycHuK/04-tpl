@@ -91,6 +91,9 @@
     <Content Include="TestFiles\SuperBig.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="TestFiles\Winter.FullSolved.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="TestFiles\Winter.solved.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -24,14 +24,9 @@ namespace JapaneseCrossword
                 return SolutionStatus.BadInputFilePath;
             }
 
-            try
-            {
-                crossword = SolveObviousLines(crossword);
-            }
-            catch (IncorrectLineUpdaterInputDataException)
-            {
+            crossword = SolveObviousLines(crossword);
+            if (crossword == null)
                 return SolutionStatus.IncorrectCrossword;
-            }
 
             try
             {
@@ -58,23 +53,28 @@ namespace JapaneseCrossword
             for (var i = 0; i < crossword.ColumnCount; i++)
                 columnsToWork.Enqueue(i);
 
-            SolveAllTasks(crossword);
+            var error = SolveAllTasks(crossword);
+            if (error)
+                return null;
 
             return crossword;
         }
-        protected void UpdateOneLine(Crossword crossword, bool isColumn, int index)
+        protected bool UpdateOneLine(Crossword crossword, bool isColumn, int index)
         {
             var otherLinesToWork = isColumn ? rowsToWork : columnsToWork;
             var line = crossword.GetLine(isColumn, index);
             var res = new LineUpdater(line, isColumn ? crossword.ColumnsBlocks[index] : crossword.RowsBlocks[index]).GetAnswer();
+            if (res == null)
+                return true;
             for (var i = 0; i < line.Length; i++)
                 if (res[i] != line[i] && !otherLinesToWork.Contains(i))
                     otherLinesToWork.Enqueue(i);
             crossword.SetLine(isColumn, index, res);
+            return false;
         }
 
 
-        protected abstract void SolveAllTasks(Crossword crossword);
+        protected abstract bool SolveAllTasks(Crossword crossword);
 
 
     }

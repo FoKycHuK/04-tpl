@@ -74,12 +74,9 @@ namespace JapaneseCrossword.Tests
             for (var i = 0; i < line.Length; i++)
                 line[i] = Cell.White;
             var updater = new LineUpdater(line, new List<int>() { 1 });
-            try
-            {
-                var newLine = updater.GetAnswer();
+            var newLine = updater.GetAnswer();
+            if (newLine != null)
                 Assert.Fail();
-            }
-            catch (IncorrectLineUpdaterInputDataException) { }
         }
     }
 }

@@ -8,39 +8,38 @@ namespace JapaneseCrossword
 {
     public class TLPSolver : BaseCrosswordSolver
     {
-        HashSet<Task> setWithCurTasks;
+        HashSet<Task<bool>> setWithCurTasks;
         Crossword crossword;
 
-        protected override void SolveAllTasks(Crossword crossword)
+        protected override bool SolveAllTasks(Crossword crossword)
         {
             this.crossword = crossword;
-            setWithCurTasks = new HashSet<Task>();
+            setWithCurTasks = new HashSet<Task<bool>>();
 
-            try
+            while (rowsToWork.Count > 0 || columnsToWork.Count > 0)
             {
-                while (rowsToWork.Count > 0 || columnsToWork.Count > 0)
-                {
-                    ExecuteAllQueue(false);
-                    ExecuteAllQueue(true);
-                }
+                if (ExecuteAllQueue(false))
+                    return true;
+                if (ExecuteAllQueue(true))
+                    return true;
             }
-            catch (AggregateException e)
-            {
-                throw e.InnerExceptions.Last();
-            }
+            return false;
         }
-        void ExecuteAllQueue(bool isColumn)
+        bool ExecuteAllQueue(bool isColumn)
         {
             var queue = isColumn ? columnsToWork : rowsToWork;
             while (queue.Count > 0)
             {
                 var index = queue.Dequeue();
-                var task = new Task(() => UpdateOneLine(crossword, isColumn, index));
-                task.Start();
+                var task = Task.Run(() => UpdateOneLine(crossword, isColumn, index));
                 setWithCurTasks.Add(task);
             }
             Task.WaitAll(setWithCurTasks.ToArray());
+            foreach (var value in setWithCurTasks)
+                if (value.Result)
+                    return true;
             setWithCurTasks.Clear();
+            return false;
         }
     }
 }

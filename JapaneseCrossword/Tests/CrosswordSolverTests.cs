@@ -1,6 +1,7 @@
 using System.IO;
 using NUnit.Framework;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace JapaneseCrossword
 {
@@ -99,6 +100,49 @@ namespace JapaneseCrossword
             var TLPTime = stopwatch.ElapsedMilliseconds;
             stopwatch.Stop();
             Assert.IsTrue(TLPTime < simpleTime);
+        }
+
+        [Test]
+        public void BackTracker_winter_test()
+        {
+            var inputFilePath = @"TestFiles\Winter.txt";
+            var outputFilePath = Path.GetRandomFileName();
+            var correctOutputFilePath = @"TestFiles\Winter.FullSolved.txt";
+
+            var solver = new CrosswordSolver();
+            var tracking = new BackTracker(solver);
+            var crossword = FileWorker.ReadFromFile(inputFilePath);
+            var answer = tracking.GetAnswer(crossword);
+            FileWorker.WriteToFile(outputFilePath, answer.Field);
+            CollectionAssert.AreEqual(File.ReadAllText(correctOutputFilePath), File.ReadAllText(outputFilePath));
+        }
+
+        [Test]
+        public void BackTracker_working_on_car()
+        {
+            var inputFilePath = @"TestFiles\Car.txt";
+            var outputFilePath = Path.GetRandomFileName();
+            var correctOutputFilePath = @"TestFiles\Car.solved.txt";
+
+            var solver = new CrosswordSolver();
+            var tracking = new BackTracker(solver);
+            var crossword = FileWorker.ReadFromFile(inputFilePath);
+            var answer = tracking.GetAnswer(crossword);
+            FileWorker.WriteToFile(outputFilePath, answer.Field);
+            CollectionAssert.AreEqual(File.ReadAllText(correctOutputFilePath), File.ReadAllText(outputFilePath));
+        }
+
+        [Test]
+        public void BackTracker_simple_test()
+        {
+            var solver = new CrosswordSolver();
+            var tracking = new BackTracker(solver);
+            var crossword = new Crossword(new List<int>[] { new List<int> { 1 }, new List<int> { 1 }}, new List<int>[] { new List<int>() { 1 } , new List<int>() { 1 } });
+            var answer = tracking.GetAnswer(crossword);
+            Assert.AreEqual(Cell.White, answer.Field[0, 0]);
+            Assert.AreEqual(Cell.White, answer.Field[1, 1]);
+            Assert.AreEqual(Cell.Black, answer.Field[1, 0]);
+            Assert.AreEqual(Cell.Black, answer.Field[0, 1]);
         }
     }
 }

@@ -54,8 +54,7 @@ namespace JapaneseCrossword
 
         public Crossword Copy()
         {
-            //todo: RowsBlocks и ColumnsBlocks копируются по ссылке, получается нечестная копия - их может изменить кто-то другой в другой экземпляре Crossword и мы увидим эти изменения
-            var copy = new Crossword(RowsBlocks, ColumnsBlocks, (Cell[,])Field.Clone());
+            var copy = new Crossword((List<int>[])RowsBlocks.Clone(), (List<int>[])ColumnsBlocks.Clone(), (Cell[,])Field.Clone());
             return copy;
         }
     }

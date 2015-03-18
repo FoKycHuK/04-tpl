@@ -17,17 +17,11 @@ namespace JapaneseCrossword
 
         public Crossword GetAnswer(Crossword crossword)
         {
-            try
-            {
-                solver.SolveObviousLines(crossword);
-            }
-            //todo: это бесполезное исключение, солвер вполне бы мог возвращать вместо него особый код ответа либо null. на его обработку среда затратит кучу ресурсов, не нужно бросать его
-            catch (IncorrectLineUpdaterInputDataException)
-            {
+            if (solver.SolveObviousLines(crossword) == null)
                 return null;
-            }
             Point unknown = null;
             //todo: почему сразу не выходим, когда нашли точку unknown? это будет работать, но сбивает с толку
+            
             for(var i = 0; i < crossword.RowCount; i++)
                 for (var j = 0; j < crossword.ColumnCount; j++)
                     if (crossword.Field[i, j] == Cell.Unknown)

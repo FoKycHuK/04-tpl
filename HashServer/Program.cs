@@ -58,7 +58,7 @@ namespace HashServer
 		}
 
 		private const int defaultPort = 20000;
-		private static readonly int[] ports = new int[] { 21612, 21613, 21614, 21615, 21616 };
+		private static readonly int[] ports = new int[] { 21612 };//, 21613, 21614, 21615, 21616 };
 		private static readonly byte[] Key = Encoding.UTF8.GetBytes("Контур.Шпора");
 		private static readonly ILog log = LogManager.GetLogger(typeof(Program));
 	}

@@ -28,33 +28,22 @@ namespace HashServer
 		{
 			while(true)
 			{
-				try
-				{
-					var context = await listener.GetContextAsync();
+				var context = await listener.GetContextAsync();
 
-					Task.Run(
-						async () =>
+				Task.Run(
+					async () =>
+					{
+						var ctx = context;
+						try
 						{
-							var ctx = context;
-							try
-							{
-								await CallbackAsync(ctx);
-							}
-							catch(Exception e)
-							{
-								log.Error(e);
-							}
-							finally
-							{
-								ctx.Response.Close();
-							}
+							await CallbackAsync(ctx);
 						}
-					);
-				}
-				catch(Exception e)
-				{
-					log.Error(e);
-				}
+						finally
+						{
+							ctx.Response.Close();
+						}
+					}
+				);
 			}
 		}
 

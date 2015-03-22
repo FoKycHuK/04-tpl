@@ -46,6 +46,9 @@ namespace ProxyToHashServer
 				log.Fatal(e);
 				throw;
 			}
+
+			//var ms = DownloadWebPageAsync("127.0.0.1:19999", "1").Result;
+			//Console.WriteLine(Encoding.UTF8.GetString(ms.ToArray()));
 		}
 
 		private static async Task OnContextAsync(HttpListenerContext context)
@@ -55,16 +58,25 @@ namespace ProxyToHashServer
 			var remoteEndPoint = context.Request.RemoteEndPoint;
 			log.InfoFormat("{0}: received {1} from {2}", requestId, query, remoteEndPoint);
 			context.Request.InputStream.Close();
-
-			var ms = await DownloadWebPageAsync(hashServers[rand.Next(hashServers.Length)], query); 
+			MemoryStream ms = null;
+			while (ms == null)
+			{
+				try
+				{
+					ms = await DownloadWebPageAsync(hashServers[rand.Next(hashServers.Length)], query);
+				}
+				catch (Exception)
+				{
+					log.InfoFormat("Server down");
+				}
+			}
 			var encryptedBytes = ms.ToArray(); 
 
 			await context.Response.OutputStream.WriteAsync(encryptedBytes, 0, encryptedBytes.Length);
 			context.Response.OutputStream.Close();
-			log.InfoFormat("{0}: {1} sent back to {2}", requestId, encryptedBytes, remoteEndPoint);
+			log.InfoFormat("{0}: {1} sent back to {2}", requestId, Encoding.UTF8.GetString(encryptedBytes), remoteEndPoint);
 		}
 
-		//необходимые методы. пока оставлю тут.
 		public static async Task<MemoryStream> DownloadWebPageAsync(string ipAndPortOfServer, string query)
 		{
 			var sw = Stopwatch.StartNew();
@@ -79,14 +91,14 @@ namespace ProxyToHashServer
 			return ms;
 		}
 
-		private static HttpWebRequest CreateRequest(string uriStr, int timeout = 1000)
+		private static HttpWebRequest CreateRequest(string uriStr, int timeout = 5)
 		{
 			var request = WebRequest.CreateHttp(uriStr);
 			request.Timeout = timeout;
 			request.Proxy = null;
 			request.KeepAlive = true;
 			request.ServicePoint.UseNagleAlgorithm = false;
-			request.ServicePoint.ConnectionLimit = 100500;
+			request.ServicePoint.ConnectionLimit = 100;
 			return request;
 		}
 	}

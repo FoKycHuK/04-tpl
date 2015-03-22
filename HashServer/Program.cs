@@ -16,13 +16,13 @@ namespace HashServer
 			XmlConfigurator.Configure();
 			try
 			{
-				var listener = new Listener(port, "method", OnContextAsync);
-				listener.Start();
+				foreach (var port in ports)
+				{
+					var listener = new Listener(port, "method", OnContextAsync);
+					listener.Start();
 
-				var listenerSync = new ListenerSync(port, "methodSync", OnContext);
-				listenerSync.Start();
-
-				log.InfoFormat("Server started!");
+					log.InfoFormat("Server started on port {0}", port);
+				}
 				new ManualResetEvent(false).WaitOne();
 			}
 			catch(Exception e)
@@ -51,31 +51,14 @@ namespace HashServer
 			log.InfoFormat("{0}: {1} sent back to {2}", requestId, hash, remoteEndPoint);
 		}
 
-		private static void OnContext(HttpListenerContext context)
-		{
-			var requestId = Guid.NewGuid();
-			var query = context.Request.QueryString["query"];
-			var remoteEndPoint = context.Request.RemoteEndPoint;
-			log.InfoFormat("{0}: received {1} from {2}", requestId, query, remoteEndPoint);
-			context.Request.InputStream.Close();
-
-			Thread.Sleep(1000);
-
-			var hash = Convert.ToBase64String(CalcHash(Encoding.UTF8.GetBytes(query)));
-			var encryptedBytes = Encoding.UTF8.GetBytes(hash);
-
-			context.Response.OutputStream.WriteAsync(encryptedBytes, 0, encryptedBytes.Length);
-			context.Response.OutputStream.Close();
-			log.InfoFormat("{0}: {1} sent back to {2}", requestId, hash, remoteEndPoint);
-		}
-
 		private static byte[] CalcHash(byte[] data)
 		{
 			using(var hasher = new HMACMD5(Key))
 				return hasher.ComputeHash(data);
 		}
 
-		private const int port = 20000;
+		private const int defaultPort = 20000;
+		private static readonly int[] ports = new int[] { 21612, 21613, 21614, 21615, 21616 };
 		private static readonly byte[] Key = Encoding.UTF8.GetBytes("Контур.Шпора");
 		private static readonly ILog log = LogManager.GetLogger(typeof(Program));
 	}

@@ -1,10 +1,10 @@
-﻿using HashServer;
-using log4net;
+﻿using log4net;
 using log4net.Config;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -17,17 +17,15 @@ namespace ProxyToHashServer
 	{
 		private static readonly Random rand = new Random();
 		private const int defaultPort = 20000;
+        private const int timeout = 1500;
 		private static readonly ILog log = LogManager.GetLogger(typeof(Program));
 
 
 		private static readonly string[] hashServers = //пока это будет тут, потом перенесу в файл, если нужно будет.
 			new string[]
 			{
-				"127.0.0.1:21612",
-				"127.0.0.1:21613",
-				"127.0.0.1:21614",
-				"127.0.0.1:21615",
-				"127.0.0.1:21616",
+				"127.0.0.1:22722",
+				"127.0.0.1:22723",
 			};
 
 		static void Main(string[] args)
@@ -59,21 +57,54 @@ namespace ProxyToHashServer
 			log.InfoFormat("{0}: received {1} from {2}", requestId, query, remoteEndPoint);
 			context.Request.InputStream.Close();
 			MemoryStream ms = null;
+            var usableServers = hashServers.ToList();
+            string server = null;
 			while (ms == null)
 			{
 				try
 				{
-					ms = await DownloadWebPageAsync(hashServers[rand.Next(hashServers.Length)], query);
+                    if (usableServers.Count == 0)
+                    {
+                        log.InfoFormat("All servers unavailible");
+                        context.Response.StatusCode = 500;
+                        context.Response.Close();
+                        return;
+                    }
+                    var tasks = new Task<MemoryStream>[2];
+                    server = usableServers[rand.Next(usableServers.Count)];
+                    tasks[0] = Task.Run(async () => 
+                        {
+                            await Task.Delay(timeout);
+                            return (MemoryStream)null;
+                        });
+                    tasks[1] = DownloadWebPageAsync(server, query);
+                    var task = await Task.WhenAny(tasks);
+                    ms = task.Result;
+                    if (ms == null)
+                    {
+                        usableServers.Remove(server);
+                        log.InfoFormat("server request timed out");
+                    }
 				}
-				catch (Exception)
+				catch (Exception e)
 				{
+                    usableServers.Remove(server);
 					log.InfoFormat("Server down");
+                    log.InfoFormat(((AggregateException)e).InnerExceptions[0].GetType().ToString());
 				}
 			}
-			var encryptedBytes = ms.ToArray(); 
-
-			await context.Response.OutputStream.WriteAsync(encryptedBytes, 0, encryptedBytes.Length);
-			context.Response.OutputStream.Close();
+			var encryptedBytes = ms.ToArray();
+            var encodings = context.Request.Headers.GetValues("Accept-Encoding");
+            var stream = context.Response.OutputStream;
+            Console.WriteLine(encodings.Count());
+            if (encodings != null && encodings.Contains("deflate"))
+            {
+                context.Response.AddHeader("Content-Encoding", "deflate");
+                stream = new DeflateStream(stream, CompressionLevel.Optimal);
+                log.InfoFormat("data encoded");
+            }
+			await stream.WriteAsync(encryptedBytes, 0, encryptedBytes.Length);
+			stream.Close();
 			log.InfoFormat("{0}: {1} sent back to {2}", requestId, Encoding.UTF8.GetString(encryptedBytes), remoteEndPoint);
 		}
 
@@ -87,6 +118,7 @@ namespace ProxyToHashServer
 			{
 				await stream.CopyToAsync(ms);
 				Console.WriteLine("Got {0} bytes in {1} ms", ms.Position, sw.ElapsedMilliseconds);
+                log.InfoFormat("Got {0} bytes in {1} ms", ms.Position, sw.ElapsedMilliseconds);
 			}
 			return ms;
 		}

@@ -17,7 +17,7 @@ namespace ProxyToHashServer
 	{
 		private static readonly Random rand = new Random();
 		private const int defaultPort = 20000;
-        private const int timeout = 1500;
+        private const int timeout = 3000;
 		private static readonly ILog log = LogManager.GetLogger(typeof(Program));
 
 
@@ -26,6 +26,8 @@ namespace ProxyToHashServer
 			{
 				"127.0.0.1:22722",
 				"127.0.0.1:22723",
+                //"127.0.0.1:22724",
+                //"127.0.0.1:22725",
 			};
 
 		static void Main(string[] args)
@@ -96,7 +98,6 @@ namespace ProxyToHashServer
 			var encryptedBytes = ms.ToArray();
             var encodings = context.Request.Headers.GetValues("Accept-Encoding");
             var stream = context.Response.OutputStream;
-            Console.WriteLine(encodings.Count());
             if (encodings != null && encodings.Contains("deflate"))
             {
                 context.Response.AddHeader("Content-Encoding", "deflate");

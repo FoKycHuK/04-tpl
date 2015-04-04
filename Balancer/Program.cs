@@ -21,17 +21,11 @@ namespace ProxyToHashServer
 		private static readonly ILog log = LogManager.GetLogger(typeof(Program));
 
 
-		private static readonly string[] hashServers = //пока это будет тут, потом перенесу в файл, если нужно будет.
-			new string[]
-			{
-				"127.0.0.1:22722",
-				"127.0.0.1:22723",
-                //"127.0.0.1:22724",
-                //"127.0.0.1:22725",
-			};
+        private static readonly string[] hashServers = File.ReadAllLines("..\\..\\servers.txt");
 
 		static void Main(string[] args)
 		{
+            //ThreadPool.SetMinThreads(8, 8);
 			XmlConfigurator.Configure();
 			try
 			{
@@ -57,14 +51,14 @@ namespace ProxyToHashServer
 			var query = context.Request.QueryString["query"];
 			var remoteEndPoint = context.Request.RemoteEndPoint;
 			log.InfoFormat("{0}: received {1} from {2}", requestId, query, remoteEndPoint);
-			context.Request.InputStream.Close();
+			//context.Request.InputStream.Close();
 			MemoryStream ms = null;
             var usableServers = hashServers.ToList();
             string server = null;
 			while (ms == null)
 			{
-				try
-				{
+                try
+                {
                     if (usableServers.Count == 0)
                     {
                         log.InfoFormat("All servers unavailible");
@@ -74,6 +68,7 @@ namespace ProxyToHashServer
                     }
                     var tasks = new Task<MemoryStream>[2];
                     server = usableServers[rand.Next(usableServers.Count)];
+                    log.InfoFormat(requestId + " Server chosen");
                     tasks[0] = Task.Run(async () => 
                         {
                             await Task.Delay(timeout);
@@ -81,6 +76,7 @@ namespace ProxyToHashServer
                         });
                     tasks[1] = DownloadWebPageAsync(server, query);
                     var task = await Task.WhenAny(tasks);
+                    log.InfoFormat(requestId + " Answer getted");
                     ms = task.Result;
                     if (ms == null)
                     {
@@ -88,12 +84,12 @@ namespace ProxyToHashServer
                         log.InfoFormat("server request timed out");
                     }
 				}
-				catch (Exception e)
-				{
+                catch (Exception e)
+                {
                     usableServers.Remove(server);
-					log.InfoFormat("Server down");
+                    log.InfoFormat("Server down");
                     log.InfoFormat(((AggregateException)e).InnerExceptions[0].GetType().ToString());
-				}
+                }
 			}
 			var encryptedBytes = ms.ToArray();
             var encodings = context.Request.Headers.GetValues("Accept-Encoding");
@@ -102,7 +98,7 @@ namespace ProxyToHashServer
             {
                 context.Response.AddHeader("Content-Encoding", "deflate");
                 stream = new DeflateStream(stream, CompressionLevel.Optimal);
-                log.InfoFormat("data encoded");
+                log.InfoFormat(requestId + " data encoded");
             }
 			await stream.WriteAsync(encryptedBytes, 0, encryptedBytes.Length);
 			stream.Close();
@@ -124,10 +120,10 @@ namespace ProxyToHashServer
 			return ms;
 		}
 
-		private static HttpWebRequest CreateRequest(string uriStr, int timeout = 5)
+		private static HttpWebRequest CreateRequest(string uriStr, int connTimeout = 500)
 		{
 			var request = WebRequest.CreateHttp(uriStr);
-			request.Timeout = timeout;
+			request.Timeout = connTimeout;
 			request.Proxy = null;
 			request.KeepAlive = true;
 			request.ServicePoint.UseNagleAlgorithm = false;

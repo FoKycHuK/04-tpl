@@ -12,7 +12,7 @@ namespace ProxyToHashServer
 
         public Listener(int port, string suffix, Func<HttpListenerContext, Task> callbackAsync)
         {
-            ThreadPool.SetMinThreads(8, 8);
+            ThreadPool.SetMinThreads(4, 4);
             CallbackAsync = callbackAsync;
             listener = new HttpListener();
             listener.Prefixes.Add(string.Format("http://+:{0}{1}/", port, suffix != null ? "/" + suffix.TrimStart('/') : ""));
